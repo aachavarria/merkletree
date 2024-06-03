@@ -10,14 +10,14 @@ async function main() {
     console.log('Deploying contracts with the account:', deployerAddress);
 
     const whitelistAddresses = [
-        {address: '0x1234567890abcdef1234567890abcdef12345678', maxAmount: 100 },
-        {address: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd', maxAmount: 100 },
-        {address: '0xabcdefabcdefabcdefabcdefabcdefabcdefabce', maxAmount: 100 },
-        {address: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266', maxAmount: 400 },
+        '0x1234567890abcdef1234567890abcdef12345678',
+        '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
+        '0xabcdefabcdefabcdefabcdefabcdefabcdefabce',
+        '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
     ];
 
 
-    const leaves = whitelistAddresses.map(addr => keccak256(ethers.solidityPacked(["address", "uint256"], [addr.address, addr.maxAmount])));
+    const leaves = whitelistAddresses.map(addr => keccak256(addr));
     const tree = new MerkleTree(leaves, keccak256, { sortPairs: true });
     const root = tree.getRoot().toString('hex');
     const merkleRoot = arrayify('0x' + root);

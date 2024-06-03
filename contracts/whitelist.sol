@@ -13,20 +13,17 @@ contract Whitelist {
         merkleRoot = _merkleRoot;
     }
 
-    function buy(uint _amount, uint _maxAmount, bytes32[] calldata _proof) public {
+    function buy(uint _amount, bytes32[] calldata _proof) public {
         require(_amount > 0, "Purchase amount must be greater than 0");
-        require(_maxAmount > 0, "Max amount must be greater than 0");
         require(_proof.length > 0, "Proof must be provided");
-
-        require(isWhitelisted(msg.sender, _maxAmount, _proof), "Proof is not valid");
-        require(_amount <= _maxAmount, "Purchase amount exceeds max amount");
+        require(isWhitelisted(msg.sender, _proof), "Proof is not valid");
 
         emit Purchase(msg.sender, _amount);
 
     }
 
-    function isWhitelisted(address _address,uint _maxAmount, bytes32[] calldata _proof) private view returns (bool) {
-        bytes32 leaf = keccak256(abi.encodePacked(_address, _maxAmount));
+    function isWhitelisted(address _address, bytes32[] calldata _proof) private view returns (bool) {
+        bytes32 leaf = keccak256(abi.encodePacked(_address));
         return MerkleProof.verify(_proof, merkleRoot, leaf);
     }
 }
